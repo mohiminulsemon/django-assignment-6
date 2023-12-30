@@ -1,16 +1,10 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-
 {% block title %}{{ book.name }}{% endblock %}
 
-
 {% block content %}
-
-
 <div class="container mt-5">
-
-
     {% if messages %}
     {% for message in messages %}
     <div style="width: 50%; margin: auto;" class="alert alert-danger alert-{{message.tags}} text-center" role="alert">
@@ -18,7 +12,6 @@
     </div>
     {% endfor %}
     {% endif %}
-
 
     <div class="row">
         <div class="col-md-6 d-flex align-items-center justify-content-center">
@@ -33,22 +26,28 @@
             <p>{{ book.description }}</p>
             <p><strong>Price:</strong> ${{ book.price }}</p>
 
-
             {% if user.is_authenticated %}
-            <form method="post" action="" class="mt-3">
-                {% csrf_token %}
-                <div class="text-center mb-3">
-                    <button name="buy_now" type="submit" class="btn btn-primary">Buy Now</button>
-                </div>
-            </form>
+                {% if user in book.borrowers.all %}
+                    <form method="post" action="{}" class="mt-3">
+                        {% csrf_token %}
+                        <div class="text-center mb-3">
+                            <button type="submit" class="btn btn-success">Return</button>
+                        </div>
+                    </form>
+                    
+                {% else %}
+                    <form method="post" action="" class="mt-3">
+                        {% csrf_token %}
+                        <div class="text-center mb-3">
+                            <button name="borrow_now" type="submit" class="btn btn-primary">Borrow Now</button>
+                        </div>
+                    </form>
+                {% endif %}
             {% else %}
-            <p class="mt-3"><a href="{% url 'login' %}">Login</a> to buy this car.</p>
+                <p class="mt-3"><a href="{% url 'login' %}">Login</a> to borrow or return this book.</p>
             {% endif %}
         </div>
     </div>
-
-
-
 
     <div class="card m-2">
         <h5 class="p-3">Total Comments: {{comments | length}}</h5>
@@ -63,21 +62,18 @@
         {% endfor %}
     </div>
 
-
-    <div class="card m-2">
-        <div class="card-body">
-            <form method="post">
-                <h1>Add Comment</h1>
-                {% csrf_token %}
-                {{comment_form | crispy}}
-
-
-                <button class="btn btn-warning">Submit</button>
-        </div>
-    </div>
-
-
+    {% if user in book.borrowers.all %}
+                        <!-- Display Comment Form only if the user has borrowed the book -->
+                        <div class="card m-2">
+                            <div class="card-body">
+                                <form method="post">
+                                    <h1>Add Comment</h1>
+                                    {% csrf_token %}
+                                    {{comment_form | crispy}}
+                                    <button class="btn btn-warning">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
 </div>
-
-
 {% endblock %}

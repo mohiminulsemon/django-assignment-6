@@ -39,7 +39,12 @@
 <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     {% for book in books %}
         <div class="bg-white rounded-lg overflow-hidden shadow-md">
-            <img src="{{ book.cover.url }}" alt="{{ book.title }}" class="w-full h-32 object-cover">
+            {% if book.image %}
+            <img src="{{ book.image.url }}" alt="{{ book.title }} Image" class="w-full h-32 object-cover">
+            {% else %}
+            <p>No image available.</p>
+            {% endif %}
+
             <div class="p-4">
                 <h2 class="font-bold text-lg">{{ book.title }}</h2>
                 <p class="text-gray-600">{{ book.description }}</p>

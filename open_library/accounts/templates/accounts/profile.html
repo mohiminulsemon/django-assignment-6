@@ -1,134 +1,102 @@
-{% extends 'base.html' %} {% load static %} {% block head_title %}Banking System{% endblock %} {% block content %} {% if form.non_field_errors %} {% for error in form.non_field_errors %}
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2" role="alert">
-    <p class="font-bold">Error!</p>
-    <p class="block sm:inline">{{ error }}</p>
-</div>
-{% endfor %} {% endif %} {% if form.non_field_errors %} {% for error in form.non_field_errors %}
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2" role="alert">
-    <p class="font-bold">Error!</p>
-    <p class="block sm:inline">{{ error }}</p>
-</div>
-{% endfor %} {% endif %}
-
+{% extends 'base.html' %} {% load static %} {% block head_title %}Banking
+System{% endblock %} {% block content %}
 
 <div class="bg-white px-3 py-4 rounded-xl my-6">
-
-    <div class="flex items-center justify-between ">
-        <h4 class="font-bold text-3xl text-left pb-5">Account NO: {{request.user.account.account_number}}</h4>
-        <a href="{% url 'password_change' %}"
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-            Change Password
-        </a>
-    </div>
-    <h1 class="font-bold text-3xl text-center pb-5">Update Profile Information</h1>
-
-    <div class="w-full mt-10">
-        <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            {% csrf_token %} {% for hidden_field in form.hidden_fields %} {{ hidden_field.errors }} {{ hidden_field }} {% endfor %}
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.first_name.id_for_label }}">
-                        {{ form.first_name.label }}
-                    </label> {{ form.first_name }} {% if form.first_name.errors %} {% for error in form.first_name.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.last_name.id_for_label }}">
-                        {{ form.last_name.label }}
-                    </label> {{ form.last_name }} {% if form.last_name.errors %} {% for error in form.last_name.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.email.id_for_label }}">
-                        {{ form.email.label }}
-                    </label> {{ form.email }} {% if form.email.errors %} {% for error in form.email.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.account_type.id_for_label }}">
-                        {{ form.account_type.label }}
-                    </label> {{ form.account_type }} {% if form.account_type.errors %} {% for error in form.account_type.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.gender.id_for_label }}">
-                        {{ form.gender.label }}
-                    </label> {{ form.gender }} {% if form.gender.errors %} {% for error in form.gender.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.birthdate.id_for_label }}">
-                        {{ form.birth_date.label }}
-                    </label> {{ form.birth_date }} {% if form.birth_date.errors %} {% for error in form.birth_date.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-            <div class="flex flex-wrap -mx-3">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.password1.id_for_label }}">
-                        {{ form.password1.label }}
-                    </label> {{ form.password1 }} {% if form.password1.errors %} {% for error in form.password1.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.password2.id_for_label }}">
-                        {{ form.password2.label }}
-                    </label> {{ form.password2 }} {% if form.password2.errors %} {% for error in form.password2.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-
-            {% for hidden_field in form.hidden_fields %} {{ hidden_field.errors }} {{ hidden_field }} {% endfor %}
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.street_address.id_for_label }}">
-                        {{ form.street_address.label }}
-                    </label> {{ form.street_address }} {% if form.street_address.errors %} {% for error in form.street_address.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.city.id_for_label }}">
-                        {{ form.city.label }}
-                    </label> {{ form.city }} {% if form.city.errors %} {% for error in form.city.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-            <div class="flex flex-wrap -mx-3 mb-6">
-                <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.postal_code.id_for_label }}">
-                        {{ form.postal_code.label }}
-                    </label> {{ form.postal_code }} {% if form.postal_code.errors %} {% for error in form.postal_code.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-                <div class="w-full md:w-1/2 px-3">
-                    <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="{{ form.country.id_for_label }}">
-                        {{ form.country.label }}
-                    </label> {{ form.country }} {% if form.country.errors %} {% for error in form.country.errors %}
-                    <p class="text-red-600 text-sm italic pb-2">{{ error }}</p>
-                    {% endfor %} {% endif %}
-                </div>
-            </div>
-            <div class="flex items-center justify-between">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
-                    Update
-                </button>
-            </div>
-        </form>
-    </div>
+  <div class="flex items-center justify-between">
+    <h4 class="font-bold text-3xl text-left pb-5">
+      Account NO: {{request.user.account.account_no}}
+    </h4>
+    <a
+      href="{% url 'update_profile' %}"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Update Profile
+    </a>
+    <a
+      href="{% url 'password_change' %}"
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+    >
+      Change Password
+    </a>
+  </div>
 </div>
+<div class="container mt-5">
+  {% if books %}
+  <h2 class="text-center text-2xl font-bold">Bought Books:</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+    <!-- {% for book in books %}
+    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+      {% if book.image %}
+      <img
+        src="{{ book.image.url }}"
+        alt="{{ book.title }} Image"
+        class="w-full h-48 object-cover"
+      />
+      {% else %}
+      <div class="bg-gray-300 w-full h-48 flex items-center justify-center">
+        <p class="text-gray-500">No Image Available</p>
+      </div>
+      {% endif %}
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2">{{ book.title }}</div>
+        <p class="text-gray-700 text-base h-16 overflow-hidden">
+          {{ book.description }}
+        </p>
+        <div class="mt-4 flex justify-between">
+          <div>
+            <p class="text-gray-600">
+              <strong>Category:</strong> {{ book.category }}
+            </p>
+            <p class="text-gray-600">
+              <strong>Price:</strong> ${{ book.price }}
+            </p>
+            <strong>Borrowing History:</strong>
+            <ul>
+              {% for transaction in entry.history %}
+              <li>
+                Borrowed on {{ transaction.timestamp }} - Amount: ${{
+                transaction.amount }}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="flex items-end">
+            <a
+              href="{% url 'book_detail' book.id %}"
+              class="bg-blue-500 text-white px-4 py-2 rounded-full"
+              >View Details</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %} -->
+    <div>
+        <h2>Borrowed Books:</h2>
+        <ul>
+            {% for entry in books_with_history %}
+            <li>
+                <strong>Title:</strong> {{ entry.book.title }}<br>
+                <strong>Description:</strong> {{ entry.book.description }}<br>
+                <strong>Price:</strong> ${{ entry.book.price }}<br>
+                <strong>Borrowing History:</strong>
+                <ul>
+                    {% for transaction in entry.history %}
+                    <li>
+                        Borrowed on {{ transaction.timestamp }} - Amount: ${{ transaction.amount }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+  </div>
+  {% else %}
+  <div class="h-70vh flex justify-content-center items-center">
+    <h1 class="text-2xl">No bought books yet.</h1>
+  </div>
+  {% endif %}
+</div>
+
 {% endblock %}

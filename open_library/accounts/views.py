@@ -15,6 +15,10 @@ from django.contrib.auth import update_session_auth_hash
 
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+
+from books.models import Book
+from transactions.models import Transaction
+from transactions.constants import  BORROWED
 # Create your views here.
 
 
@@ -61,28 +65,72 @@ class LogoutView(LogoutView):
         return reverse_lazy('home')
 
 
-class UserProfileView(LoginRequiredMixin,View):
+# class UserProfileView(LoginRequiredMixin,View):
+#     template_name = 'accounts/profile.html'
+
+#     def get(self, request):
+#         form = UserUpdateForm(instance=request.user)
+#         borrowers = Book.objects.filter(borrowers=request.user)
+#         # for book in borrowers:
+#         #     print(book.price)
+
+#         # return render(request, 'accounts/profile.html', {'form': form})
+
+
+#         return render(request, self.template_name, {'form': form, 'books': borrowers})
+
+    # def post(self, request):
+    #     # form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
+    #     form = UserUpdateForm(request.POST, instance=request.user)
+    #     if form.is_valid():
+    #         form.save()
+    #         messages.success(
+    #             request, 'Your profile has been updated successfully!')
+    #         return redirect('home')
+    #     else:
+    #         print(form.errors)
+    #         # return render(request, 'accounts/profile.html', {'form': form})
+    #     # return render(request, 'accounts/profile.html', {'form': form})
+    #     return render(request, self.template_name, {'form': form})
+
+class UserProfileView(LoginRequiredMixin, View):
     template_name = 'accounts/profile.html'
+   
+    def get(self, request, *args, **kwargs):
+        borrowed_books = Book.objects.filter(borrowers=request.user)
 
-    def get(self, request):
-        form = UserUpdateForm(instance=request.user)
-        # return render(request, 'accounts/profile.html', {'form': form})
-        return render(request, self.template_name, {'form': form})
 
-    def post(self, request):
-        # form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
-        form = UserUpdateForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(
-                request, 'Your profile has been updated successfully!')
-            return redirect('home')
-        else:
-            print(form.errors)
-            # return render(request, 'accounts/profile.html', {'form': form})
-        # return render(request, 'accounts/profile.html', {'form': form})
-        return render(request, self.template_name, {'form': form})
+        all_transactions = Transaction.objects.filter(account=request.user.account).order_by('-timestamp')
 
+
+        # Create a list to store book details along with their borrowing history
+        books_with_history = []
+
+
+        for book in borrowed_books:
+            # Get the borrowing history for each book
+            history = Transaction.objects.filter(
+                account=request.user.account,
+                transaction_type=BORROWED,
+                amount=book.price  
+            ).order_by('-timestamp')
+
+
+            # Add book and its history to the list
+            books_with_history.append({'book': book, 'history': history})
+       
+        context = {
+            'user': request.user,
+            # 'borrowed_books': borrowed_books,
+            'books_with_history': books_with_history,
+            # 'all_transactions': all_transactions
+        }
+
+
+        # for book in borrowed_books:
+        #     print(book.price)
+        # print(borrowers)
+        return render(request, self.template_name, context=context)
 
 def password_change(request):
     if request.user.is_authenticated:
@@ -108,3 +156,24 @@ def password_change(request):
     else:
         return redirect('home')
         # return redirect('profile')
+
+class UserProfileUpdateView(LoginRequiredMixin,View):
+    template_name = 'accounts/update_profile.html'
+
+
+    def get(self, request):
+        form = UserUpdateForm(instance=request.user)
+        # return render(request, 'accounts/profile.html', {'form': form})
+        return render(request, self.template_name, {'form': form})
+
+
+    def post(self, request):
+        # form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, 'Your profile has been updated successfully!')
+            return redirect('home')
+        else:
+            print(form.errors)

@@ -16,11 +16,11 @@
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto px-10">
         {% if request.user.is_authenticated %}
         <div class="text-md lg:flex-grow">
-            <a href=""
+            <a href="{% url 'transaction_report' %}"
                 class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
                 Report
             </a>
-            <a href=""
+            <a href="{% url 'deposit_money' %}"
                 class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
                 Deposit
             </a>
