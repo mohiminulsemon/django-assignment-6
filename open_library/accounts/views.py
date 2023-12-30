@@ -17,6 +17,9 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from books.models import Book
+
+from transactions.models import Transaction
+from transactions.constants import BORROWED
 # Create your views here.
 
 
@@ -55,7 +58,13 @@ class UserProfileView(LoginRequiredMixin,View):
     def get(self, request):
         form = UserUpdateForm(instance=request.user)
         borrowers = Book.objects.filter(borrowers=request.user)
-        return render(request, self.template_name, {'form': form, 'books': borrowers})
+
+        transaction_history = Transaction.objects.filter(
+            account=request.user.userlibraryaccount,
+            transaction_type=BORROWED
+        ).order_by('-timestamp')
+
+        return render(request, self.template_name, {'form': form, 'books': borrowers, 'transaction_history': transaction_history})
 
     def post(self, request):
         
