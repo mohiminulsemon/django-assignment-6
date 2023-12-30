@@ -20,16 +20,6 @@ from books.models import Book
 # Create your views here.
 
 
-def send_password_change_mail(user, subject, template):
-    # mail_subject = 'Deposit Message'
-    message = render_to_string(template, {
-        'user': user,
-    })
-    # to_email = to_user
-    # send_email = EmailMessage(mail_subject, message, to=[to_email])
-    send_email = EmailMultiAlternatives(subject, '', to=[user.email])
-    send_email.attach_alternative(message, 'text/html')
-    send_email.send()
 
 class RegistrationView(FormView):
     form_class = UserRegistrationForm
@@ -51,15 +41,11 @@ class LoginView(LoginView):
     template_name = 'accounts/login.html'
 
     def get_success_url(self):
-        # return reverse_lazy('accounts:profile')
         return reverse_lazy('profile')
-        # return reverse_lazy('home')
 
 
 class LogoutView(LogoutView):
     def get_success_url(self):
-        # if self.request.user.is_authenticated:
-        #     logout(self.request)
         return reverse_lazy('home')
 
 
@@ -69,14 +55,10 @@ class UserProfileView(LoginRequiredMixin,View):
     def get(self, request):
         form = UserUpdateForm(instance=request.user)
         borrowers = Book.objects.filter(borrowers=request.user)
-        # for book in borrowers:
-        #     print(book.price)
-
-        # return render(request, 'accounts/profile.html', {'form': form})
         return render(request, self.template_name, {'form': form, 'books': borrowers})
 
     def post(self, request):
-        # form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
+        
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
@@ -85,7 +67,6 @@ class UserProfileView(LoginRequiredMixin,View):
             return redirect('home')
         else:
             print(form.errors)
-            # return render(request, 'accounts/profile.html', {'form': form})
         # return render(request, 'accounts/profile.html', {'form': form})
         return render(request, self.template_name, {'form': form})
 
@@ -101,32 +82,23 @@ def password_change(request):
                 messages.success(
                     request, 'Your password was successfully updated!')
                 
-                # send_password_change_mail(
-                #     request.user, 
-                #     'Password Changed',
-                #     'accounts/email_templates/transaction_mail.html'
-                #     )
-
                 return redirect('profile')
             else:
                 messages.error(request, 'Please correct the error below.')
         return render(request, 'accounts/form.html', {'form': form, 'title': 'Change Your Password', 'button_text': 'Change Password', 'button_class': 'btn-warning'})
     else:
         return redirect('home')
-        # return redirect('profile')
+       
 
 class UserProfileUpdateView(LoginRequiredMixin,View):
     template_name = 'accounts/update_profile.html'
 
-
     def get(self, request):
-        form = UserUpdateForm(instance=request.user)
-        # return render(request, 'accounts/profile.html', {'form': form})
+        form = UserUpdateForm(instance=request.user) 
         return render(request, self.template_name, {'form': form})
 
 
-    def post(self, request):
-        # form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
+    def post(self, request):  
         form = UserUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()

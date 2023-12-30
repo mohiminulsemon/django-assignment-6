@@ -7,15 +7,6 @@ from books.constants import CATEGORY_CHOICES
 # class HomeView(TemplateView):
 #     template_name = 'index.html'
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['books'] = Book.objects.all()
-#         context['categories'] = CATEGORY_CHOICES
-#         return context
-
-
-
-
 
 def home(request, book_category=None):
     books = Book.objects.all()

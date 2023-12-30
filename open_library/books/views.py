@@ -12,6 +12,19 @@ from decimal import Decimal
 from transactions.models import Transaction
 from transactions.constants import BORROWED, RETURNED
 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+def send_borrow_mail(user, amount, subject, template, current_balance):
+    message = render_to_string(template, {
+        'user': user,
+        'amount': amount,
+        'current_balance': current_balance,
+    })
+    send_email = EmailMultiAlternatives(subject, '', to=[user.email])
+    send_email.attach_alternative(message, 'text/html')
+    send_email.send()
+
 
 def book_detail(request, book_id):
     book = get_object_or_404(models.Book, id=book_id)
@@ -22,7 +35,7 @@ def book_detail(request, book_id):
 
         if 'borrow_now' in request.POST:
          if user.is_authenticated:
-            # Check if the user has a library account
+           
             user_account = UserLibraryAccount.objects.filter(user=user).first()
 
 
@@ -32,15 +45,13 @@ def book_detail(request, book_id):
                 return redirect('book_detail', book_id=book.id)
 
 
-            # Check if the user has enough balance to borrow the book
             if user_account.balance < book.price:
                 messages.error(
                     request, 'You do not have enough balance to borrow this book.')
                 return redirect('book_detail', book_id=book.id)
 
 
-            # Update the user's balance and add the book to the borrower list
-            # user_account.balance -= book.price
+           
             user_account.balance -= Decimal(str(book.price))
             user_account.save()
 
@@ -48,12 +59,12 @@ def book_detail(request, book_id):
             
             Transaction.objects.create(
             account=user_account,
-            amount=-book.price,  # negative because it's an expense for the user
+            amount=-book.price,  
             balance_after_transaction=user_account.balance,
             transaction_type=BORROWED
         )
-
-            # Assuming you have a 'borrowers' field in your Book model
+            send_borrow_mail(user, book.price, 'Borrow Message','./borrow_mail.html', user_account.balance)
+            
             book.borrowers.add(user)
 
 
@@ -75,7 +86,7 @@ def book_detail(request, book_id):
 
             Transaction.objects.create(
             account=user_account,
-            amount=+book.price,  # negative because it's an expense for the user
+            amount=+book.price, 
             balance_after_transaction=user_account.balance,
             transaction_type=RETURNED
             )
@@ -93,11 +104,11 @@ def book_detail(request, book_id):
 
                 messages.success(request, 'Comment added successfully.')
 
-                # Debug print statements
+                
                 print("Comment added successfully.")
                 print(f"Redirecting to book_detail page for book ID: {book.id}")
 
-                # Redirect the user back to the same page after processing the comment
+               
                 return redirect('book_detail', book_id=book.id)
         else:
             messages.error(

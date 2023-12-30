@@ -25,32 +25,15 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 # Create your views here.
+
 def send_transaction_mail(user, amount, subject, template):
-    # mail_subject = 'Deposit Message'
     message = render_to_string(template, {
         'user': user,
         'amount': amount
     })
-    # to_email = to_user
-    # send_email = EmailMessage(mail_subject, message, to=[to_email])
     send_email = EmailMultiAlternatives(subject, '', to=[user.email])
     send_email.attach_alternative(message, 'text/html')
     send_email.send()
-
-
-# def send_transfer_mail(user, amount, subject, template, current_balance):
-#     # print(user.user.email)
-#     # mail_subject = 'Deposit Message'
-#     message = render_to_string(template, {
-#         'user': user,
-#         'amount': amount,
-#         'current_balance': current_balance,
-#     })
-#     # to_email = to_user
-#     # send_email = EmailMessage(mail_subject, message, to=[to_email])
-#     send_email = EmailMultiAlternatives(subject, '', to=[user.user.email])
-#     send_email.attach_alternative(message, 'text/html')
-#     send_email.send()
 
 
 class TransactionCreateMixin(LoginRequiredMixin, CreateView):
@@ -67,7 +50,6 @@ class TransactionCreateMixin(LoginRequiredMixin, CreateView):
         return kwargs
 
     def get_context_data(self, **kwargs):
-        # passing title to template
         context = super().get_context_data(**kwargs)
         context.update({
             'title': self.title
@@ -94,10 +76,6 @@ class DepositMoneyView(TransactionCreateMixin):
             ]
         )
 
-        # messages.success(
-        #     self.request,
-        #     f'{"{:,.2f}".format(float(amount))}$ was deposited to your account successfully'
-        # )
         send_transaction_mail(
             self.request.user,
             amount,
@@ -143,45 +121,3 @@ class TransactionReportView(LoginRequiredMixin, ListView):
         })
 
         return context
-    
-class WithdrawMoneyView(TransactionCreateMixin):
-    form_class = WithdrawForm
-    title = 'Withdraw Money'
-
-    def get_initial(self):
-        initial = {'transaction_type': BORROWED}
-        return initial
-
-    def form_valid(self, form):
-        amount = form.cleaned_data.get('amount')
-
-        self.request.user.account.balance -= form.cleaned_data.get('amount')
-        # balance = 300
-        # amount = 5000
-        self.request.user.account.save(update_fields=['balance'])
-
-        messages.success(
-            self.request,
-            f'Successfully withdrawn {"{:,.2f}".format(float(amount))}$ from your account'
-        )
-
-        # send email
-        # mail_subject = 'Withdrawal Message'
-        # message = render_to_string('transactions/withdrawal_mail.html', {
-        #     'user': self.request.user,
-        #     'amount': amount
-        # })
-        # to_email = self.request.user.email
-        # # send_email = EmailMessage(mail_subject, message, to=[to_email])
-        # send_email = EmailMultiAlternatives(mail_subject, '', to=[to_email])
-        # send_email.attach_alternative(message, 'text/html')
-        # send_email.send()
-
-        send_transaction_mail(
-            self.request.user,
-            amount,
-            'Withdrawal Message',
-            'transactions/withdrawal_mail.html'
-        )
-
-        return super().form_valid(form)
