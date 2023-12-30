@@ -73,7 +73,6 @@ class UserProfileView(LoginRequiredMixin,View):
         #     print(book.price)
 
         # return render(request, 'accounts/profile.html', {'form': form})
-        
         return render(request, self.template_name, {'form': form, 'books': borrowers})
 
     def post(self, request):

@@ -10,7 +10,7 @@ from accounts.models import UserLibraryAccount
 from decimal import Decimal
 
 from transactions.models import Transaction
-from transactions.constants import BORROWED
+from transactions.constants import BORROWED, RETURNED
 
 
 def book_detail(request, book_id):
@@ -59,6 +59,31 @@ def book_detail(request, book_id):
 
             messages.success(request, 'Book borrowed successfully!')
             return redirect('book_detail', book_id=book.id)
+         
+
+        elif 'return_book' in request.POST:
+            user_account = UserLibraryAccount.objects.filter(user=user).first()
+
+
+            if not user_account:
+                messages.error(
+                    request, 'You need a library account to borrow books. Please create an account.')
+                return redirect('book_detail', book_id=book.id)
+            
+            user_account.balance += Decimal(str(book.price))
+            user_account.save()
+
+            Transaction.objects.create(
+            account=user_account,
+            amount=+book.price,  # negative because it's an expense for the user
+            balance_after_transaction=user_account.balance,
+            transaction_type=RETURNED
+            )
+
+            book.borrowers.remove(user)
+            messages.success(request, 'Book returned successfully!')
+
+
         elif 'comment' in request.POST:
             comment_form = forms.CommentForm(request.POST)
             if comment_form.is_valid():
