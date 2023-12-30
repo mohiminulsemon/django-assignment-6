@@ -70,7 +70,7 @@
                                     <h1>Add Comment</h1>
                                     {% csrf_token %}
                                     {{comment_form | crispy}}
-                                    <button class="btn btn-warning">Submit</button>
+                                    <button name="comment" type="submit" class="btn btn-warning">Submit</button>
                                 </form>
                             </div>
                         </div>

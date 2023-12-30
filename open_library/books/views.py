@@ -19,7 +19,9 @@ def book_detail(request, book_id):
 
 
     if request.method == 'POST':
-        if user.is_authenticated:
+
+        if 'borrow_now' in request.POST:
+         if user.is_authenticated:
             # Check if the user has a library account
             user_account = UserLibraryAccount.objects.filter(user=user).first()
 
@@ -57,6 +59,21 @@ def book_detail(request, book_id):
 
             messages.success(request, 'Book borrowed successfully!')
             return redirect('book_detail', book_id=book.id)
+        elif 'comment' in request.POST:
+            comment_form = forms.CommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.book = book
+                new_comment.save()
+
+                messages.success(request, 'Comment added successfully.')
+
+                # Debug print statements
+                print("Comment added successfully.")
+                print(f"Redirecting to book_detail page for book ID: {book.id}")
+
+                # Redirect the user back to the same page after processing the comment
+                return redirect('book_detail', book_id=book.id)
         else:
             messages.error(
                 request, 'You need to be logged in to borrow books.')

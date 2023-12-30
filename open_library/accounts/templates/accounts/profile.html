@@ -24,7 +24,7 @@ System{% endblock %} {% block content %}
   {% if books %}
   <h2 class="text-center text-2xl font-bold">Bought Books:</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-    <!-- {% for book in books %}
+    {% for book in books %}
     <div class="max-w-sm rounded overflow-hidden shadow-lg">
       {% if book.image %}
       <img
@@ -70,27 +70,7 @@ System{% endblock %} {% block content %}
         </div>
       </div>
     </div>
-    {% endfor %} -->
-    <div>
-        <h2>Borrowed Books:</h2>
-        <ul>
-            {% for entry in books_with_history %}
-            <li>
-                <strong>Title:</strong> {{ entry.book.title }}<br>
-                <strong>Description:</strong> {{ entry.book.description }}<br>
-                <strong>Price:</strong> ${{ entry.book.price }}<br>
-                <strong>Borrowing History:</strong>
-                <ul>
-                    {% for transaction in entry.history %}
-                    <li>
-                        Borrowed on {{ transaction.timestamp }} - Amount: ${{ transaction.amount }}
-                    </li>
-                    {% endfor %}
-                </ul>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% endfor %}
   </div>
   {% else %}
   <div class="h-70vh flex justify-content-center items-center">
