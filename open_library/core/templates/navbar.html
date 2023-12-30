@@ -1,6 +1,6 @@
 <nav class="flex items-center justify-between flex-wrap bg-white p-6 px-10">
     <div class="flex items-center flex-shrink-0 text-white mr-6">
-        <span class="font-semibold text-xl tracking-tight text-blue-900"><a href="/">Library Management System</a></span>
+        <span class="font-semibold text-xl tracking-tight text-blue-900"><a href="/">Open Library</a></span>
     </div>
     <div class="block lg:hidden">
         <button
@@ -11,11 +11,14 @@
             </svg>
         </button>
     </div>
-    <!-- Register Login non logged in user er jonne -->
-    <!-- Report , Withdraw, Deposit       Profile Logout logged in user -->
+    
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto px-10">
         {% if request.user.is_authenticated %}
         <div class="text-md lg:flex-grow">
+            <a href="{% url 'home' %}"
+                class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
+                Home
+            </a>
             <a href="{% url 'transaction_report' %}"
                 class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
                 Report
@@ -23,17 +26,6 @@
             <a href="{% url 'deposit_money' %}"
                 class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
                 Deposit
-            </a>
-            <a href=""
-                class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
-                Withdraw
-            </a>
-            <a href=""
-                class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
-                Loan Request
-            </a>
-            <a href="" class="block mt-4 lg:inline-block lg:mt-0 text-blue-900 hover:text-red-900 hover:font-black mr-4">
-                Transfer
             </a>
         </div>
         <div class="flex w-auto">
